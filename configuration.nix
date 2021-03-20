@@ -6,6 +6,14 @@
 
 let docker-ide = (import ./docker-ide.nix {}); in
 {
+  nix = {
+    # Enable flakes
+    package = pkgs.nixFlakes;
+    extraOptions = ''
+      experimental-features = nix-command flakes
+    '';
+  };
+
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
@@ -14,6 +22,8 @@ let docker-ide = (import ./docker-ide.nix {}); in
       # Walt user?
       ./walt.nix
     ];
+
+  nixpkgs.config.allowUnfree = true;
 
   # Use the GRUB 2 boot loader.
   boot.loader.grub.enable = true;
@@ -50,7 +60,7 @@ let docker-ide = (import ./docker-ide.nix {}); in
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   # environment.systemPackages = with pkgs; [
-  #   wget vim
+  #   nix
   # ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -71,7 +81,7 @@ let docker-ide = (import ./docker-ide.nix {}); in
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  networking.firewall.enable = false;
 
   # Enable CUPS to print documents.
   # services.printing.enable = true;
@@ -110,7 +120,10 @@ let docker-ide = (import ./docker-ide.nix {}); in
 
   # Allow GNOME theming
   programs.dconf.enable = true;
-  
+
+  # Enable docker
+  virtualisation.docker.enable = true;
+
   # Give root access to vim
   home-manager.users.root = {
     home.packages = with pkgs; [ docker-ide ];
@@ -122,6 +135,8 @@ let docker-ide = (import ./docker-ide.nix {}); in
   users.users.walt = {
     isNormalUser = true;
     extraGroups = [
+      # Enable sudo-less docker interaction
+      "docker"
       # Allow to see vbox shares
       "vboxsf"
       # Enable 'sudo'

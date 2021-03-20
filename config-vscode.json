@@ -1,0 +1,18 @@
+{
+    "editor.fontSize": 10,
+    "editor.quickSuggestionsDelay": 2000,
+    "files.autoSave": "onFocusChange",
+    "[jade]": {
+        "editor.tabSize": 2
+    },
+    "window.zoomLevel": 0,
+    "editor.autoClosingBrackets": "never",
+    "editor.autoClosingQuotes": "never",
+    "editor.rulers": [80, 120],
+    "[vue]": {
+        "editor.tabSize": 2
+    },
+    "[python]": {
+        
+    }
+}

@@ -35,7 +35,15 @@ let docker-ide = (import ./docker-ide.nix {}); in
       palette = "Solarized";
     };
 
-    home.packages = with pkgs; [ breeze-gtk docker-ide inkscape ];
+    # https://nixos.wiki/wiki/Vscode#Managing_extensions
+    home.packages =
+      let vscode-personal-extensions = (with pkgs.vscode-extensions; [
+        ms-vscode.cpptools
+        ]); in
+      let vscode-personal = pkgs.vscode-with-extensions.override {
+          vscodeExtensions = vscode-personal-extensions;
+        }; in
+      with pkgs; [ breeze-gtk conda docker-ide inkscape libreoffice obs-studio vscode-personal ];
     ##xdg.configFile.".vimrc".source = ./docker-ide/ide-base/dot-files/.vimrc;
     #home.file.".vimrc".source = ./docker-ide/ide-base/dot-files/.vimrc;
     #home.file.".ctags.vimrc".source = ./docker-ide/ide-base/dot-files/.ctags.vimrc;
@@ -43,6 +51,8 @@ let docker-ide = (import ./docker-ide.nix {}); in
     #home.file."docker-ide".source = ./docker-ide;
     # Still need to manually execute "docker-ide-setup" on first run
     home.sessionVariables.EDITOR = "vim";
+
+    home.file.".config/Code/User/settings.json".source = ./config-vscode.json;
   };
 }
 
